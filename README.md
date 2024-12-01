@@ -2,6 +2,10 @@
 
 This project helps you create visually appealing GitHub contribution patterns by automating your commits and synchronizing reminders with Google Calendar. Follow the steps below to set up and customize your grid art.
 
+During setting Google Calendar API, I followed <a href="https://www.youtube.com/watch?v=B2E82UPUnOY" target="_blank">
+  NeuralNine tutorial</a>, and then adjusted it to my code.
+
+
 <div align="center">
   <img src="./grid_output.png" alt="Header Image" width="900"/>
 </div>
