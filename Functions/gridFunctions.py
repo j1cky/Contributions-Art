@@ -1,5 +1,23 @@
+""" Necessary functions to use the Github Contributions Art"""
 import matplotlib.pyplot as plt
 import pandas as pd
+import copy 
+import os.path
+
+import datetime as dt
+import pandas as pd
+from google.oauth2 import service_account
+from datetime import datetime, timedelta
+from pathlib import Path
+
+
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
+
 
 green_max  = "#196127"
 green_more = "#239a3b"
@@ -18,6 +36,7 @@ def set_background(theme): # fixes the background and empty boxes colors
         return box_edge_color, box_blank_color
     else:
         print('theme should be set to "light" or "dark"')
+        return None, None
 
 def generate_dataframe(colors,box_blank_color): # generates a dataframe containing the schedual of contributions 
 
@@ -33,7 +52,7 @@ def generate_dataframe(colors,box_blank_color): # generates a dataframe containi
 
     art_df = pd.DataFrame(numerical_matrix)
 
-    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     weeks = ["W"+str(i+1) for i in range(53)]
 
     art_df.index = days
@@ -41,22 +60,36 @@ def generate_dataframe(colors,box_blank_color): # generates a dataframe containi
     return art_df
 
 def create_grid(colors,box_edge_color): 
-
-    rows, cols = len(colors), len(colors[0])
+    grid_colors = copy.deepcopy(colors)
+    rows, cols = len(grid_colors), len(grid_colors[0])
     n = 12
     fig, ax = plt.subplots(figsize=(n, n*7/53))  # Adjust size as needed
 
     ax.set_xlim(0, cols)
     ax.set_ylim(0, rows)
     
+    grid_colors[0][0] = box_edge_color
+    grid_colors[1][0] = box_edge_color
+    grid_colors[2][0] = box_edge_color
+    grid_colors[3][52] = box_edge_color
+    grid_colors[4][52] = box_edge_color
+    grid_colors[5][52] = box_edge_color
+    grid_colors[6][52] = box_edge_color
+    
+    
+
+    
     # Draw each square
     for y in range(rows):
         for x in range(cols):
-            color = colors[y][x]
+            color = grid_colors[y][x]
             ax.add_patch(plt.Rectangle((x, rows - 1 - y), 1, 1, 
                                         facecolor=color, edgecolor=box_edge_color))
+            
+    
 
     fig.patch.set_facecolor(box_edge_color)
+    
 
     
     ax.set_aspect('equal')
@@ -64,6 +97,13 @@ def create_grid(colors,box_edge_color):
 
     plt.savefig("grid_output.png", bbox_inches='tight')
     print(f"Grid saved as {"grid_output.png"}")
+
+    return None
+
+
+
+
+# --------------------------- ART num 1 ---------------------------
 
 def create_line(colors, color, a0, b0, direction): 
     """
